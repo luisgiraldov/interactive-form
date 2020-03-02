@@ -90,18 +90,32 @@
     }//end checkingCheckboxes
 
     function showPaymentMethod(event){
-        const selection = event ? event.target.value : "Select Payment Method";
-        const paymentOptions = payment.children;
-        const paymentSections = payment.parentNode.children;
-        for (let i = 3, len = paymentSections.length; i < len; i++){
-            paymentSections[i].hidden = true;
+        const selection = event ? event.target.value : "";
+        // const paymentOptions = payment.children;
+        const selectPaymentOption = payment.firstElementChild;
+        selectPaymentOption.disabled = true;
+        const creditCardSection = payment.nextElementSibling;
+        const paypalSection = creditCardSection.nextElementSibling;
+        const bitcoinSection = paypalSection.nextElementSibling;
+        paypalSection.hidden = true;
+        bitcoinSection.hidden = true;
+        // if(selection && selectPaymentOption.value === "select method"){
+        //     payment.removeChild(selectPaymentOption);
+        // }
+
+        if(selection === "credit card"){
+            creditCardSection.hidden = false;
+            paypalSection.hidden = true;
+            bitcoinSection.hidden = true;
+        } else if(selection === "paypal"){
+            creditCardSection.hidden = true;
+            paypalSection.hidden = false;
+            bitcoinSection.hidden = true;
+        } else if(selection === "bitcoin"){
+            creditCardSection.hidden = true;
+            paypalSection.hidden = true;
+            bitcoinSection.hidden = false;
         }
-        // const creditCardSection = payment.nextElementSibling;
-        // const paypalSection = creditCardSection.nextElementSibling;
-        // const bitcoinSection = paypalSection.nextElementSibling;
-        // creditCardSection.hidden = true;
-        // paypalSection.hidden = true;
-        // bitcoinSection.hidden = true;
     }
 
     /***
