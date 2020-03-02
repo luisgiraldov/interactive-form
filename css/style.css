@@ -180,6 +180,10 @@ option {
   clear: both;
 }
 
+.unavailable {
+	color: grey;
+}
+
 /* ================================= 
   Media Queries
 ==================================== */
