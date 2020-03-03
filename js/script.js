@@ -143,10 +143,6 @@
         const nameValue = name.value;
         const errorSpan = name.nextElementSibling;
         if(nameValue.length > 0){
-            // name.style.borderColor = "green";
-            // name.style.backgroundColor = "azure";
-            // name.style.marginBottom = "";
-
             addValidInputClass(name);
             showHideError({
                 element: errorSpan,
@@ -161,10 +157,6 @@
                 whatToDo: "show",
                 errorText: "The name field must have a name on it!"
             });
-            
-            // name.style.borderColor = "red";
-            // name.style.backgroundColor = "#fdd";
-            // name.style.marginBottom = "0";
             return false;
         }
     }
@@ -199,6 +191,30 @@
             addValidInputClass(email);
         }
 
+    }
+
+    /***
+     * Callback function to handle activities checkboxes
+     ***/
+    function activitiesValidator(){
+        const checkboxes = document.querySelectorAll("input[type='checkbox']");
+        const errorSpan = checkboxes[6].parentNode.nextElementSibling;
+        for(let i = 0, len = checkboxes.length; i < len; i++){
+            if(checkboxes[i].checked){
+                showHideError({
+                    element: errorSpan,
+                    whatToDo: "hide",
+                    errorText: ""
+                });
+                return true;
+            }
+        }
+
+        showHideError({
+            element: errorSpan,
+            whatToDo: "show",
+            errorText: "You must select at least one activity!"
+        });
     }
 
     /***
@@ -252,20 +268,33 @@
         showDesignatedColors(event);
     });
 
+    //fix this event handler 
     activitiesFieldset.addEventListener("change", event => {
         checkingCheckboxes(event);
+        activitiesValidator();
     });
 
     payment.addEventListener("change", event =>{
         showPaymentMethod(event);
     });
 
-    email.addEventListener("input", emailValidator);
+    addingMultipleEventsListener({
+                                  events:["blur",
+                                         "input"],
+                                  element: email,
+                                  callback: emailValidator  
+                                  });
     addingMultipleEventsListener({
                                   events:["blur",
                                          "input"],
                                   element: name,
                                   callback: nameValidator  
                                   });
+    addingMultipleEventsListener({
+                                  events:["blur",
+                                          "mouseout"],
+                                  element: activitiesFieldset,
+                                  callback: activitiesValidator  
+                                });                              
     initializer();
 })();
