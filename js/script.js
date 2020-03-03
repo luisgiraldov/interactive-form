@@ -4,6 +4,8 @@
     const colorMenu = document.getElementById("color");
     const activitiesFieldset = document.querySelector(".js-activities");
     const payment = document.getElementById("payment");
+    const name = document.getElementById("name");
+    const email = document.getElementById("mail");
     let totalCost = 0;
     /***
      * appending first option to the color menu
@@ -20,7 +22,6 @@
         label.hidden = true;
         activitiesFieldset.appendChild(label);
         otherJobRole.hidden = true;
-
         showDesignatedColors();
         showPaymentMethod();
     }
@@ -89,6 +90,9 @@
         }
     }//end checkingCheckboxes
 
+    /***
+     * Callback function to handle payment section
+     ***/ 
     function showPaymentMethod(event){
         const selection = event ? event.target.value : "";
         // const paymentOptions = payment.children;
@@ -118,6 +122,114 @@
         }
     }
 
+    function addValidInputClass(element){
+        if(element.classList.contains("invalidInput")){
+            element.classList.remove("invalidInput");
+        }
+        element.classList.add("validInput");
+    }
+
+    function addInvalidInputClass(element){
+        if(element.classList.contains("validInput")){
+            element.classList.remove("validInput");
+        }
+        element.classList.add("invalidInput");
+    }
+
+    /***
+     * Callback function to handle name input
+     ***/ 
+    function nameValidator(){
+        const nameValue = name.value;
+        const errorSpan = name.nextElementSibling;
+        if(nameValue.length > 0){
+            // name.style.borderColor = "green";
+            // name.style.backgroundColor = "azure";
+            // name.style.marginBottom = "";
+
+            addValidInputClass(name);
+            showHideError({
+                element: errorSpan,
+                whatToDo: "hide",
+                errorText: ""
+            });
+            return true;
+        } else {
+            addInvalidInputClass(name);
+            showHideError({
+                element: errorSpan,
+                whatToDo: "show",
+                errorText: "The name field must have a name on it!"
+            });
+            
+            // name.style.borderColor = "red";
+            // name.style.backgroundColor = "#fdd";
+            // name.style.marginBottom = "0";
+            return false;
+        }
+    }
+
+    /***
+     * Callback function to handle email input
+     ***/
+    function emailValidator(){
+        const emailRegex = /^[^@]+@[^@.]+\.[a-z]+$/i;
+        const emailValue = email.value;
+        const errorSpan = email.nextElementSibling;
+        if(emailValue === ""){
+            showHideError({
+                element: errorSpan,
+                whatToDo: "show",
+                errorText: "The email field must have a value!"
+            });
+            addInvalidInputClass(email);
+        } else if(!emailRegex.test(emailValue)){
+            showHideError({
+                element: errorSpan,
+                whatToDo: "show",
+                errorText: "The email must be a valid email address!"
+            });
+            addInvalidInputClass(email);
+        } else {
+            showHideError({
+                element: errorSpan,
+                whatToDo: "hide",
+                errorText: ""
+            });
+            addValidInputClass(email);
+        }
+
+    }
+
+    /***
+     * showError function to handle input errors
+     * @object -data holds the values of element, whatToDo, and errorText
+     ***/ 
+    function showHideError(data){
+        const errorSpan = data.element;
+        if(data.whatToDo === "show"){
+            errorSpan.classList.remove("is-hidden");
+            errorSpan.classList.add("show-error");
+            errorSpan.textContent = data.errorText;
+        } else if(data.whatToDo === "hide"){
+            errorSpan.classList.remove("show-error");
+            errorSpan.classList.add("is-hidden");
+            errorSpan.textContent = data.errorText;
+        }
+        
+    }
+
+    /***
+     * addingMultipleEventsListener function to add event listeners
+     * @array events
+     * @object data holds the element and callback
+     ***/ 
+    function addingMultipleEventsListener(data){
+        data.events.forEach( event => {
+            data.element.addEventListener(event, data.callback);
+        });
+    }
+    
     /***
      * event delegation on the select menu with id title
      * hide or show text field when selecting/deselecting "other" option
@@ -147,5 +259,13 @@
     payment.addEventListener("change", event =>{
         showPaymentMethod(event);
     });
+
+    email.addEventListener("input", emailValidator);
+    addingMultipleEventsListener({
+                                  events:["blur",
+                                         "input"],
+                                  element: name,
+                                  callback: nameValidator  
+                                  });
     initializer();
 })();
