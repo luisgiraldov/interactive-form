@@ -6,6 +6,9 @@
     const payment = document.getElementById("payment");
     const name = document.getElementById("name");
     const email = document.getElementById("mail");
+    const creditCard = document.getElementById("cc-num");
+    const zipCode = document.getElementById("zip");
+    const cvv = document.getElementById("cvv");
     let totalCost = 0;
     /***
      * appending first option to the color menu
@@ -218,6 +221,40 @@
     }
 
     /***
+     * Callback function to handle payment
+     ***/
+    function paymentValidator(event){
+        const input = event.target.value;
+        const target = event.target;
+        const validInput = /\d/.test(input);
+
+        if(input === ""){
+            if(target === creditCard){
+                const errorSpan = creditCard.nextElementSibling;
+                showHideError({
+                    element: errorSpan,
+                    whatToDo: "show",
+                    errorText: "You must enter a credit card number, this field cannot be empty!"
+                });
+            } else if(target === zipCode){
+                const errorSpan = zipCode.nextElementSibling;
+                showHideError({
+                    element: errorSpan,
+                    whatToDo: "show",
+                    errorText: "You must enter a zip code number, this field cannot be empty!"
+                });
+            } else if(target === cvv){
+                const errorSpan = cvv.nextElementSibling;
+                showHideError({
+                    element: errorSpan,
+                    whatToDo: "show",
+                    errorText: "You must enter a cvv number, this field cannot be empty!"
+                });
+            }
+        }
+    }
+
+    /***
      * showError function to handle input errors
      * @object -data holds the values of element, whatToDo, and errorText
      ***/ 
@@ -268,33 +305,60 @@
         showDesignatedColors(event);
     });
 
-    //fix this event handler 
+    name.addEventListener("blur", nameValidator);
+    name.addEventListener("input", nameValidator);
+
+    email.addEventListener("blur", emailValidator);
+    email.addEventListener("input", activitiesValidator);
+
+    //this handler has to be separated because when the change event is fired we need to get the target element label ando if we mix them with the other events, 
+    // that would change the target value, for example the mouseout event would get the fieldset and not the label, and by doing that we wouldn't get the data-cost 
+    // attribute
     activitiesFieldset.addEventListener("change", event => {
         checkingCheckboxes(event);
         activitiesValidator();
     });
+    activitiesFieldset.addEventListener("blur", activitiesValidator);
+    activitiesFieldset.addEventListener("mouseout", activitiesValidator);
 
     payment.addEventListener("change", event =>{
         showPaymentMethod(event);
     });
 
-    addingMultipleEventsListener({
-                                  events:["blur",
-                                         "input"],
-                                  element: email,
-                                  callback: emailValidator  
-                                  });
-    addingMultipleEventsListener({
-                                  events:["blur",
-                                         "input"],
-                                  element: name,
-                                  callback: nameValidator  
-                                  });
-    addingMultipleEventsListener({
-                                  events:["blur",
-                                          "mouseout"],
-                                  element: activitiesFieldset,
-                                  callback: activitiesValidator  
-                                });                              
+   
+    creditCard.addEventListener("blur", event => {
+        paymentValidator(event);
+    });
+    creditCard.addEventListener("input", event => {
+        paymentValidator(event);
+    });
+    zipCode.addEventListener("blur", event => {
+        paymentValidator(event);
+    });
+    zipCode.addEventListener("input", event => {
+        paymentValidator(event);
+    });
+    cvv.addEventListener("blur", event => {
+        paymentValidator(event);
+    });
+    cvv.addEventListener("input", event => {
+        paymentValidator(event);
+    });
+
+    // addingMultipleEventsListener({
+    //                               events:["blur", "input"],
+    //                               element: email,
+    //                               callback: emailValidator  
+    //                               });
+    // addingMultipleEventsListener({
+    //                               events:["blur", "input"],
+    //                               element: name,
+    //                               callback: nameValidator  
+    //                               });
+    // addingMultipleEventsListener({
+    //                               events:["blur", "mouseout"],
+    //                               element: activitiesFieldset,
+    //                               callback: activitiesValidator  
+    //                             });                              
     initializer();
 })();
