@@ -10,6 +10,18 @@
     const zipCode = document.getElementById("zip");
     const cvv = document.getElementById("cvv");
     let totalCost = 0;
+
+    /*** 
+    * `replaceSpecialCharacters` function
+    * Returns a string without HTML entities or special characters
+    * @param {String} userInput - Holds the string value the user typed into the search bar
+    * Find any HTML entity and replace with an empty string, simulates a basic html sanitizer, and avoid creating an unexpected regex.
+    ***/
+    function validateSpecialCharacters(userInput){
+        const regex = /[\!\@\#\$\%\^\&\*\(\)\+\=\~\`\<\>\"\/\|\\\?]/gm;
+        return regex.test(userInput);
+    }
+
     /***
      * appending first option to the color menu
      * get the job role text field and hide it
@@ -106,9 +118,6 @@
         const bitcoinSection = paypalSection.nextElementSibling;
         paypalSection.hidden = true;
         bitcoinSection.hidden = true;
-        // if(selection && selectPaymentOption.value === "select method"){
-        //     payment.removeChild(selectPaymentOption);
-        // }
 
         if(selection === "credit card"){
             creditCardSection.hidden = false;
@@ -125,38 +134,27 @@
         }
     }
 
-    function addValidInputClass(element){
-        if(element.classList.contains("invalidInput")){
-            element.classList.remove("invalidInput");
-        }
-        element.classList.add("validInput");
-    }
-
-    function addInvalidInputClass(element){
-        if(element.classList.contains("validInput")){
-            element.classList.remove("validInput");
-        }
-        element.classList.add("invalidInput");
-    }
-
     /***
      * Callback function to handle name input
      ***/ 
     function nameValidator(){
-        const nameValue = name.value;
+        let nameValue = name.value;
         const errorSpan = name.nextElementSibling;
+        nameValue = nameValue.trim();
+        const validInput = validateSpecialCharacters(nameValue);
+
         if(nameValue.length > 0){
-            addValidInputClass(name);
             showHideError({
-                element: errorSpan,
+                element: name,
+                errorElement: errorSpan,
                 whatToDo: "hide",
                 errorText: ""
             });
             return true;
         } else {
-            addInvalidInputClass(name);
             showHideError({
-                element: errorSpan,
+                element: name,
+                errorElement: errorSpan,
                 whatToDo: "show",
                 errorText: "The name field must have a name on it!"
             });
@@ -173,25 +171,25 @@
         const errorSpan = email.nextElementSibling;
         if(emailValue === ""){
             showHideError({
-                element: errorSpan,
+                element: email,
+                errorElement: errorSpan,
                 whatToDo: "show",
                 errorText: "The email field must have a value!"
             });
-            addInvalidInputClass(email);
         } else if(!emailRegex.test(emailValue)){
             showHideError({
-                element: errorSpan,
+                element: email,
+                errorElement: errorSpan,
                 whatToDo: "show",
                 errorText: "The email must be a valid email address!"
             });
-            addInvalidInputClass(email);
         } else {
             showHideError({
-                element: errorSpan,
+                element: email,
+                errorElement: errorSpan,
                 whatToDo: "hide",
                 errorText: ""
             });
-            addValidInputClass(email);
         }
 
     }
@@ -199,13 +197,13 @@
     /***
      * Callback function to handle activities checkboxes
      ***/
-    function activitiesValidator(){
+    function activitiesValidator(event){
         const checkboxes = document.querySelectorAll("input[type='checkbox']");
         const errorSpan = checkboxes[6].parentNode.nextElementSibling;
         for(let i = 0, len = checkboxes.length; i < len; i++){
             if(checkboxes[i].checked){
                 showHideError({
-                    element: errorSpan,
+                    errorElement: errorSpan,
                     whatToDo: "hide",
                     errorText: ""
                 });
@@ -214,7 +212,7 @@
         }
 
         showHideError({
-            element: errorSpan,
+            errorElement: errorSpan,
             whatToDo: "show",
             errorText: "You must select at least one activity!"
         });
@@ -224,47 +222,154 @@
      * Callback function to handle payment
      ***/
     function paymentValidator(event){
-        const input = event.target.value;
+        let input = event.target.value;
+        input = input.replace(/\s*/g, "");
         const target = event.target;
-        const validInput = /\d/.test(input);
-
+        // target.value = input;
+        const validInput = /^\d*$/.test(input);
+        /* Validate if the field is empty */
         if(input === ""){
             if(target === creditCard){
                 const errorSpan = creditCard.nextElementSibling;
                 showHideError({
-                    element: errorSpan,
+                    element: creditCard,
+                    errorElement: errorSpan,
                     whatToDo: "show",
                     errorText: "You must enter a credit card number, this field cannot be empty!"
                 });
             } else if(target === zipCode){
                 const errorSpan = zipCode.nextElementSibling;
                 showHideError({
-                    element: errorSpan,
+                    element: zipCode,
+                    errorElement: errorSpan,
                     whatToDo: "show",
                     errorText: "You must enter a zip code number, this field cannot be empty!"
                 });
             } else if(target === cvv){
                 const errorSpan = cvv.nextElementSibling;
                 showHideError({
-                    element: errorSpan,
+                    element: cvv,
+                    errorElement: errorSpan,
                     whatToDo: "show",
                     errorText: "You must enter a cvv number, this field cannot be empty!"
                 });
             }
+        } /*Validate if the input is a number*/    
+        else if(!validInput){
+            if(target === creditCard){
+                const errorSpan = creditCard.nextElementSibling;
+                showHideError({
+                    element: creditCard,
+                    errorElement: errorSpan,
+                    whatToDo: "show",
+                    errorText: "You must enter a credit card number, this field cannot contain any other type of character!"
+                });
+            } else if(target === zipCode){
+                const errorSpan = zipCode.nextElementSibling;
+                showHideError({
+                    element: zipCode,
+                    errorElement: errorSpan,
+                    whatToDo: "show",
+                    errorText: "You must enter a zip code number, this field cannot contain any other type of character!!"
+                });
+            } else if(target === cvv){
+                const errorSpan = cvv.nextElementSibling;
+                showHideError({
+                    element: cvv,
+                    errorElement: errorSpan,
+                    whatToDo: "show",
+                    errorText: "You must enter a cvv number, this field cannot contain any other type of character!!"
+                });
+            }
+        } /** If the target was fired by the credit card field, check if its value is between 13 and 16 characters long */
+        else if(target === creditCard){
+            if(input.length < 13 || input.length > 16){
+                const errorSpan = creditCard.nextElementSibling;
+                showHideError({
+                    element: creditCard,
+                    errorElement: errorSpan,
+                    whatToDo: "show",
+                    errorText: "You must enter a valid credit card number!"
+                });
+            } else {
+                const errorSpan = creditCard.nextElementSibling;
+                showHideError({
+                    element: creditCard,
+                    errorElement: errorSpan,
+                    whatToDo: "hide",
+                    errorText: ""
+                });
+            }
+        } /** If the target was fired by the zip code field, check if its value is 5 digits long */
+        else if(target === zipCode){
+            if(input.length < 5 || input.length > 5){
+                const errorSpan = zipCode.nextElementSibling;
+                showHideError({
+                    element: zipCode,
+                    errorElement: errorSpan,
+                    whatToDo: "show",
+                    errorText: "You must enter a valid zip code number!"
+                });
+            } else {
+                const errorSpan = zipCode.nextElementSibling;
+                showHideError({
+                    element: zipCode,
+                    errorElement: errorSpan,
+                    whatToDo: "hide",
+                    errorText: ""
+                });
+            }
+        } /** If the target was fired by the cvv field, check if its value is 3 digits long */
+        else if(target === cvv){
+            if(input.length < 3 || input.length > 3){
+                const errorSpan = cvv.nextElementSibling;
+                showHideError({
+                    element: cvv,
+                    errorElement: errorSpan,
+                    whatToDo: "show",
+                    errorText: "You must enter a valid cvv number!"
+                });
+            } else {
+                const errorSpan = cvv.nextElementSibling;
+                showHideError({
+                    element: cvv,
+                    errorElement: errorSpan,
+                    whatToDo: "hide",
+                    errorText: ""
+                });
+            }
         }
-    }
+        
+        target.value = input;
+    } //end paymentValidator
 
     /***
      * showError function to handle input errors
      * @object -data holds the values of element, whatToDo, and errorText
      ***/ 
     function showHideError(data){
-        const errorSpan = data.element;
+        const errorSpan = data.errorElement;
         if(data.whatToDo === "show"){
+            if(data.element){
+                const element = data.element;
+                if(element.classList.contains("validInput")){
+                    element.classList.remove("validInput");
+                }
+                element.classList.add("invalidInput");
+            }
+
             errorSpan.classList.remove("is-hidden");
             errorSpan.classList.add("show-error");
             errorSpan.textContent = data.errorText;
         } else if(data.whatToDo === "hide"){
+            if(data.element){
+                const element = data.element;
+                if(element.classList.contains("invalidInput")){
+                    element.classList.remove("invalidInput");
+                }
+                element.classList.add("validInput");
+            }
+
             errorSpan.classList.remove("show-error");
             errorSpan.classList.add("is-hidden");
             errorSpan.textContent = data.errorText;
@@ -309,7 +414,7 @@
     name.addEventListener("input", nameValidator);
 
     email.addEventListener("blur", emailValidator);
-    email.addEventListener("input", activitiesValidator);
+    email.addEventListener("input", emailValidator);
 
     //this handler has to be separated because when the change event is fired we need to get the target element label ando if we mix them with the other events, 
     // that would change the target value, for example the mouseout event would get the fieldset and not the label, and by doing that we wouldn't get the data-cost 
@@ -319,12 +424,13 @@
         activitiesValidator();
     });
     activitiesFieldset.addEventListener("blur", activitiesValidator);
-    activitiesFieldset.addEventListener("mouseout", activitiesValidator);
+    activitiesFieldset.addEventListener("mouseleave", event =>{
+        activitiesValidator(event);
+    });
 
     payment.addEventListener("change", event =>{
         showPaymentMethod(event);
     });
-
    
     creditCard.addEventListener("blur", event => {
         paymentValidator(event);
