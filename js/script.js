@@ -9,6 +9,7 @@
     const creditCard = document.getElementById("cc-num");
     const zipCode = document.getElementById("zip");
     const cvv = document.getElementById("cvv");
+    const registerButton = document.querySelector("[type='submit']");
     let totalCost = 0;
 
     /*** 
@@ -234,15 +235,16 @@
     /***
      * Callback function to handle payment
      ***/
-    function paymentValidator(event){
-        let input = event.target.value;
+    function paymentValidator(eventOrElement){
+        const target = eventOrElement.target ? eventOrElement.target : eventOrElement;
+        let input = target.value;
         input = input.replace(/\s*/g, "");
-        const target = event.target;
         target.value = input;
         const validInput = /^\d*$/.test(input);
         const errorSpan = target.nextElementSibling;
         let whatToDo = "show",
-            errorText = "";
+            errorText = "",
+            validInformation = false;
         /* Validate if the field is empty */
         if(input === ""){
             if(target === creditCard){
@@ -279,6 +281,7 @@
                 errorText = "You must enter a valid credit card number!";
             } else {
                 whatToDo = "hide";
+                validInformation = true;
             }
             showHideError({
                 element: target,
@@ -286,12 +289,14 @@
                 whatToDo: whatToDo,
                 errorText: errorText
             });
+            return validInformation;
         } /** If the target was fired by the zip code field, check if its value is 5 digits long */
         else if(target === zipCode){
             if(input.length < 5 || input.length > 5){
                 errorText = "You must enter a valid zip code number!";
             } else {
                 whatToDo = "hide";
+                validInformation = true;
             }
             showHideError({
                 element: target,
@@ -299,12 +304,14 @@
                 whatToDo: whatToDo,
                 errorText: errorText
             });
+            return validInformation;
         } /** If the target was fired by the cvv field, check if its value is 3 digits long */
         else if(target === cvv){
             if(input.length < 3 || input.length > 3){
                 errorText = "You must enter a valid cvv number!";
             } else {
                 whatToDo = "hide";
+                validInformation = true;
             }
             showHideError({
                 element: target,
@@ -312,7 +319,9 @@
                 whatToDo: whatToDo,
                 errorText: errorText
             });
+            return validInformation;
         }
+        return validInformation;
     } //end paymentValidator
 
     /***
@@ -346,6 +355,15 @@
             errorSpan.classList.add("is-hidden");
             errorSpan.textContent = data.errorText;
         } 
+    }
+
+
+    function checkForm(event){
+        const one = paymentValidator(creditCard);
+        const two = paymentValidator(zipCode);
+        const three = paymentValidator(cvv);
+
+        console.log(one, two, three);
     }
     
     /***
@@ -407,6 +425,12 @@
     });
     cvv.addEventListener("input", event => {
         paymentValidator(event);
-    });                            
+    }); 
+    
+    registerButton.addEventListener("click", event => {
+        event.preventDefault();
+        checkForm(event);
+    });
+
     initializer();
 })();
