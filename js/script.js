@@ -18,8 +18,8 @@
     * Find any HTML entity and replace with an empty string, simulates a basic html sanitizer, and avoid creating an unexpected regex.
     ***/
     function validateSpecialCharacters(userInput){
-        const regex = /[\!\@\#\$\%\^\&\*\(\)\+\=\~\`\<\>\"\/\|\\\?]/gm;
-        return regex.test(userInput);
+        const regexValidation = /[\!\@\#\$\%\^\&\*\(\)\+\=\~\`\<\>\"\/\|\\\?]/gm;
+        return !regexValidation.test(userInput);
     }
 
     /***
@@ -138,28 +138,30 @@
      * Callback function to handle name input
      ***/ 
     function nameValidator(){
-        let nameValue = name.value;
-        const errorSpan = name.nextElementSibling;
+        let nameValue = name.value, 
+            whatToDo = "", 
+            errorText = "";
         nameValue = nameValue.trim();
+        const errorSpan = name.nextElementSibling;
         const validInput = validateSpecialCharacters(nameValue);
 
-        if(nameValue.length > 0){
-            showHideError({
-                element: name,
-                errorElement: errorSpan,
-                whatToDo: "hide",
-                errorText: ""
-            });
-            return true;
+        if(nameValue.length > 0 && validInput){
+            whatToDo = "hide";
+        } else if(!validInput){
+            whatToDo = "show";
+            errorText = "The input cannot contain any special character, such as <!@?...";
         } else {
-            showHideError({
-                element: name,
-                errorElement: errorSpan,
-                whatToDo: "show",
-                errorText: "The name field must have a name on it!"
-            });
-            return false;
+            whatToDo = "show";
+            errorText = "The name field cannot be empty!";
         }
+
+        showHideError({
+            element: name,
+            errorElement: errorSpan,
+            whatToDo: whatToDo,
+            errorText: errorText
+        });
+        return validInput;
     }
 
     /***
@@ -167,31 +169,35 @@
      ***/
     function emailValidator(){
         const emailRegex = /^[^@]+@[^@.]+\.[a-z]+$/i;
-        const emailValue = email.value;
+        const specialCharactersRegex = /[\!\#\$\%\^\&\*\(\)\+\=\~\`\<\>\"\/\|\\\?\s*]/gm;
+        let emailValue = email.value
+            whatToDo = "",
+            errorText = "",
+            validInput = false;
+        emailValue = emailValue.trim();
         const errorSpan = email.nextElementSibling;
+
         if(emailValue === ""){
-            showHideError({
-                element: email,
-                errorElement: errorSpan,
-                whatToDo: "show",
-                errorText: "The email field must have a value!"
-            });
+            whatToDo = "show";
+            errorText = "The email field cannot be empty!";
+        } else if(specialCharactersRegex.test(emailValue)){
+            whatToDo = "show";
+            errorText = "The email field cannot receive special characters different than @ and cannot contain spaces!";
         } else if(!emailRegex.test(emailValue)){
-            showHideError({
-                element: email,
-                errorElement: errorSpan,
-                whatToDo: "show",
-                errorText: "The email must be a valid email address!"
-            });
+            whatToDo = "show";
+            errorText = "The email must be a valid email address!";
         } else {
-            showHideError({
-                element: email,
-                errorElement: errorSpan,
-                whatToDo: "hide",
-                errorText: ""
-            });
+            whatToDo = "hide";
+            validInput = true;
         }
 
+        showHideError({
+            element: email,
+            errorElement: errorSpan,
+            whatToDo: whatToDo,
+            errorText: errorText
+        });
+        return validInput;
     }
 
     /***
@@ -200,22 +206,29 @@
     function activitiesValidator(event){
         const checkboxes = document.querySelectorAll("input[type='checkbox']");
         const errorSpan = checkboxes[6].parentNode.nextElementSibling;
+        let whatToDo = "",
+            errorText = "",
+            validInput = false;
+
         for(let i = 0, len = checkboxes.length; i < len; i++){
             if(checkboxes[i].checked){
-                showHideError({
-                    errorElement: errorSpan,
-                    whatToDo: "hide",
-                    errorText: ""
-                });
-                return true;
+                whatToDo = "hide";
+                validInput = true;
+                break;
             }
+        }
+
+        if(!validInput){
+            whatToDo = "show";
+            errorText = "Please select at least one activity!";
         }
 
         showHideError({
             errorElement: errorSpan,
-            whatToDo: "show",
-            errorText: "You must select at least one activity!"
+            whatToDo: whatToDo,
+            errorText: errorText
         });
+        return validInput;
     }
 
     /***
@@ -225,7 +238,7 @@
         let input = event.target.value;
         input = input.replace(/\s*/g, "");
         const target = event.target;
-        // target.value = input;
+        target.value = input;
         const validInput = /^\d*$/.test(input);
         /* Validate if the field is empty */
         if(input === ""){
