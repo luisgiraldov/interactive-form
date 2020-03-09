@@ -1,10 +1,10 @@
 (function(){
+    const name = document.getElementById("name");
+    const email = document.getElementById("mail");
     const jobTitle = document.getElementById("title");
     const designMenu = document.getElementById("design");
     const activitiesFieldset = document.querySelector(".js-activities");
     const payment = document.getElementById("payment");
-    const name = document.getElementById("name");
-    const email = document.getElementById("mail");
     const creditCard = document.getElementById("cc-num");
     const zipCode = document.getElementById("zip");
     const cvv = document.getElementById("cvv");
@@ -27,12 +27,14 @@
      * get the job role text field and hide it
      ***/
     function initializer(){
+        const colorContainer = document.getElementById("colors-js-puns");
         const otherJobRole = document.getElementById("other-title");
         const label = document.createElement("LABEL");
         label.textContent = 0;
         label.hidden = true;
         activitiesFieldset.appendChild(label);
         otherJobRole.hidden = true;
+        colorContainer.classList.add("is-hidden");
         showDesignatedColors();
         showPaymentMethod();
     }
@@ -67,7 +69,9 @@
 
         if(selection === "Select Theme"){
             // colorOptions[0].setAttribute("selected", true);
-            colorContainer.classList.add("is-hidden");
+            if(!colorContainer.classList.contains("is-hidden")){
+                colorContainer.classList.add("is-hidden");
+            }
         } else if(selection === "js puns"){
             colorOptions[0].setAttribute("selected", true);
 
@@ -121,7 +125,6 @@
      ***/ 
     function showPaymentMethod(event){
         const selection = event ? event.target.value : "";
-        // const paymentOptions = payment.children;
         const selectPaymentOption = payment.firstElementChild;
         selectPaymentOption.disabled = true;
         const creditCardSection = payment.nextElementSibling;
@@ -369,7 +372,46 @@
         } 
     }
 
+    /***
+     * Reset fields
+     ***/
+    function resetFields(){
+        name.value = "";
+        name.classList.remove("validInput");
 
+        email.value = "";
+        email.classList.remove("validInput");
+
+        jobTitle.firstElementChild.setAttribute("selected", true);
+
+        designMenu.firstElementChild.setAttribute("selected", true);
+        const colorContainer = document.getElementById("colors-js-puns");
+        colorContainer.classList.add("is-hidden");
+
+        const checkboxes = document.querySelectorAll("input[type='checkbox']");
+        for(let i = 0, len = checkboxes.length; i < len; i++){
+            if(checkboxes[i].checked){
+                checkboxes[i].checked = false;
+            }
+        }
+        totalCost = 0;
+        const label = activitiesFieldset.lastElementChild;
+        label.hidden = true;
+
+        payment.firstElementChild.selected = true;
+        creditCard.value = "";
+        creditCard.classList.remove("validInput");
+        zipCode.value = "";
+        zipCode.classList.remove("validInput");
+        cvv.value = "";
+        cvv.classList.remove("validInput");
+
+
+    }
+
+    /***
+     * Check every field
+     ***/
     function checkForm(event){
         const errorSpan = form.lastElementChild.previousElementSibling;
         const successSubmition = errorSpan.previousElementSibling;
@@ -395,6 +437,7 @@
                 whatToDo: "show",
                 errorText: "Information submitted, Thank you!"
             });
+            resetFields();
         }
         
         showHideError({

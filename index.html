@@ -17,7 +17,7 @@
       <h1>Full Stack Conf</h1>
     </header>
 
-    <form action="index.html" method="post" novalidate>
+    <form action="index.html" method="post" class="clearfix" novalidate>
               
       <fieldset>         
         <legend>Basic Info</legend>
@@ -31,7 +31,7 @@
         <span class="error is-hidden" aria-live="polite"></span>
         
         <label for="title">Job Role</label>
-        <select id="title" name="user-title">
+        <select id="title" name="user-title" class="select-css">
           <option value="full-stack js developer">Full Stack JavaScript Developer</option>
           <option value="front-end developer">Front End Developer</option>
           <option value="back-end developer">Back End Developer</option>
@@ -49,7 +49,7 @@
         <div class="shirt-box">
           <div>
             <label for="size">Size:</label>
-            <select id="size" name="user-size">
+            <select id="size" name="user-size" class="select-css">
               <option value="small">S</option>
               <option value="medium" selected>M</option>
               <option value="large">L</option>
@@ -59,16 +59,16 @@
 
           <div>
             <label for="design">Design:</label> 
-            <select id="design" name="user-design">
+            <select id="design" name="user-design" class="select-css">
               <option>Select Theme</option>
               <option value="js puns">Theme - JS Puns</option>
               <option value="heart js">Theme - I &#9829; JS</option>
             </select>
           </div>
 
-          <div id="colors-js-puns" class="is-hidden">
+          <div id="colors-js-puns" class="">
             <label for="color">Color:</label>
-            <select id="color">
+            <select id="color" class="select-css">
               <option value="cornflowerblue">Cornflower Blue (JS Puns shirt only)</option>
               <option value="darkslategrey">Dark Slate Grey (JS Puns shirt only)</option> 
               <option value="gold">Gold (JS Puns shirt only)</option> 
@@ -115,7 +115,7 @@
         <legend>Payment Info</legend>
 
         <label for="payment">I'm going to pay with:</label>
-        <select id="payment" name="user-payment">
+        <select id="payment" name="user-payment" class="select-css">
           <option value="select method">Select Payment Method</option>
           <option value="credit card">Credit Card</option>
           <option value="paypal">PayPal</option>
@@ -143,7 +143,7 @@
           </div>
 
           <label for="exp-month">Expiration Date:</label>
-          <select id="exp-month" name="user-exp-month">
+          <select id="exp-month" name="user-exp-month" class="select-css">
             <option value="1">1 - January</option>
             <option value="2">2 - February</option>
             <option value="3">3 - March</option>
@@ -158,7 +158,7 @@
             <option value="12">12 - December</option>          		          
           </select>
           <label for="exp-year">Expiration Year:</label>
-          <select id="exp-year" name="user-exp-year">
+          <select id="exp-year" name="user-exp-year" class="select-css">
             <option value="2016">2016</option>
             <option value="2017">2017</option>
             <option value="2018">2018</option>
@@ -180,7 +180,13 @@
       <span class="success is-hidden" aria-live="polite"></span>
       <span class="error is-hidden" aria-live="polite"></span>
         
-      <button type="submit">Register</button>
+      <!-- <button type="submit">Register</button> -->
+      <button type="submit" class="button button--nina button--text-thick button--text-upper button--size-s" data-text="Register">
+        <span>R</span><span>e</span><span>g</span><span>i</span><span>s</span><span>t</span><span>e</span><span>r</span>
+      </button>
+      <!-- <button class="button button--nina button--text-thick button--text-upper button--size-s" data-text="Filter">
+        <span>F</span><span>i</span><span>l</span><span>t</span><span>e</span><span>r</span>
+      </button> -->
       
     </form>
 
