@@ -1,6 +1,7 @@
 (function(){
     const jobTitle = document.getElementById("title");
     const designMenu = document.getElementById("design");
+    const colorContainer = document.getElementById("colors-js-puns");
     const colorMenu = document.getElementById("color");
     const activitiesFieldset = document.querySelector(".js-activities");
     const payment = document.getElementById("payment");
@@ -9,7 +10,7 @@
     const creditCard = document.getElementById("cc-num");
     const zipCode = document.getElementById("zip");
     const cvv = document.getElementById("cvv");
-    const registerButton = document.querySelector("[type='submit']");
+    const form = document.getElementsByTagName("form")[0];
     let totalCost = 0;
 
     /*** 
@@ -340,7 +341,7 @@
             }
 
             errorSpan.classList.remove("is-hidden");
-            errorSpan.classList.add("show-error");
+            errorSpan.classList.add("show-message");
             errorSpan.textContent = data.errorText;
         } else if(data.whatToDo === "hide"){
             if(data.element){
@@ -351,7 +352,7 @@
                 element.classList.add("validInput");
             }
 
-            errorSpan.classList.remove("show-error");
+            errorSpan.classList.remove("show-message");
             errorSpan.classList.add("is-hidden");
             errorSpan.textContent = data.errorText;
         } 
@@ -359,11 +360,36 @@
 
 
     function checkForm(event){
-        const one = paymentValidator(creditCard);
-        const two = paymentValidator(zipCode);
-        const three = paymentValidator(cvv);
-
-        console.log(one, two, three);
+        const errorSpan = form.lastElementChild.previousElementSibling;
+        const successSubmition = errorSpan.previousElementSibling;
+        const creditCardField = paymentValidator(creditCard);
+        const zipCodeField = paymentValidator(zipCode);
+        const cvvField = paymentValidator(cvv);
+        let errorText = "",
+            spanToShow = errorSpan;
+        
+        if(!nameValidator()){
+            event.preventDefault();
+            errorText = "Name field is invalid, please check the information provided!";
+        } else if(!emailValidator()){
+            event.preventDefault();
+            errorText = "Email field is invalid, please check the information provided!";
+        } else if (!activitiesValidator()){
+            event.preventDefault();
+            errorText = "You haven't checked any activity, please check at least one!";
+        } else if(!creditCardField || !zipCodeField || !cvvField){
+            event.preventDefault();
+            errorText = "Please check the credit card information provided!";
+        } else {
+            errorText = "Information submitted, Thank you!";
+            spanToShow = successSubmition;
+        }
+        
+        showHideError({
+            errorElement: spanToShow,
+            whatToDo: "show",
+            errorText: errorText
+        });
     }
     
     /***
@@ -427,7 +453,7 @@
         paymentValidator(event);
     }); 
     
-    registerButton.addEventListener("click", event => {
+    form.addEventListener("submit", event => {
         event.preventDefault();
         checkForm(event);
     });
