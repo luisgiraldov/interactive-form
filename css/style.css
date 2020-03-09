@@ -15,9 +15,10 @@ button {
 }
 
 body {
-  font: 1em/1.5;
-  color: rgba(6, 49, 68, 0.9);
-	background: #CDE0FB;
+	font: 1em/1.5;
+	color: rgba(6, 49, 68, 0.9);
+	/* background: #CDE0FB; */
+	padding-bottom: 8em;
 }
 
 header {
@@ -25,9 +26,12 @@ header {
 }
 
 h1 {
+	/*Cool effect for titles!*/
 	font-size: 2.5em;
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
 	margin: 0;
+	/*Added by contributor, not original color, this is to be able to read it on dark backgrounds*/
+	color: rgba(11, 93, 128, 0.9);
 }
 
 a {
@@ -41,6 +45,7 @@ a {
 form {
 	padding: .875em 1.875em 1.875em;
 	background: #9BBEEF;
+	 
 	border: 2px solid rgba(8, 63, 87, 0.6);
 	border-radius: 3px;
 }
@@ -132,6 +137,20 @@ option {
 /* ================================= 
   Page Styles
 ==================================== */
+
+.backGroundContainer {
+	min-width: 100%;
+	min-height: 100%;
+	background: linear-gradient(
+       rgba(0, 0, 0, 0.5),
+       rgba(0, 0, 0, 0.5)
+     ),
+	 url("../img/evening-foggy-forest-frost.jpg") no-repeat center;
+	 
+	background-size: cover;
+	position: fixed;
+	z-index: -100000;
+}
 
 .container {
 	margin: auto;
@@ -243,6 +262,10 @@ option {
 	border-bottom: 10px solid green;
 	position: absolute;  
 	top: -10px; 
+}
+
+.visibleBlue {
+	color: rgba(21, 167, 230, 0.7);
 }
 /* ================================= 
   Media Queries

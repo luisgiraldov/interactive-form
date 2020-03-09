@@ -1,8 +1,6 @@
 (function(){
     const jobTitle = document.getElementById("title");
     const designMenu = document.getElementById("design");
-    const colorContainer = document.getElementById("colors-js-puns");
-    const colorMenu = document.getElementById("color");
     const activitiesFieldset = document.querySelector(".js-activities");
     const payment = document.getElementById("payment");
     const name = document.getElementById("name");
@@ -30,10 +28,6 @@
      ***/
     function initializer(){
         const otherJobRole = document.getElementById("other-title");
-        const option = document.createElement('OPTION');
-        option.textContent = "Please select a T-shirt theme";
-        option.selected = true;
-        colorMenu.prepend(option);
         const label = document.createElement("LABEL");
         label.textContent = 0;
         label.hidden = true;
@@ -47,6 +41,12 @@
      * Callback function to show designated colors when the design menu is changed
      ***/    
     function showDesignatedColors(event){
+        const colorContainer = document.getElementById("colors-js-puns");
+        const colorMenu = document.getElementById("color");
+        // const option = document.createElement('OPTION');
+        // option.textContent = "Please select a T-shirt theme";
+        // option.selected = true;
+        // colorMenu.prepend(option);
         const colorOptions = colorMenu.children;
         const selection = event ? event.target.value : "Select Theme";
         const midPoint = Math.round(colorOptions.length / 2);
@@ -57,7 +57,8 @@
             }
             colorOptions[i].hidden = true;
 
-            if(selection === "js puns" && i < midPoint && i > 0){
+            // if(selection === "js puns" && i < midPoint && i > 0){
+            if(selection === "js puns" && i < midPoint){
                 colorOptions[i].hidden = false;
             } else if(selection === "heart js" && i >= midPoint){
                 colorOptions[i].hidden = false;
@@ -65,11 +66,19 @@
         }
 
         if(selection === "Select Theme"){
-            colorOptions[0].setAttribute("selected", true);
+            // colorOptions[0].setAttribute("selected", true);
+            colorContainer.classList.add("is-hidden");
         } else if(selection === "js puns"){
-            colorOptions[1].setAttribute("selected", true);
+            colorOptions[0].setAttribute("selected", true);
+
+            if(colorContainer.classList.contains("is-hidden")){
+                colorContainer.classList.remove("is-hidden");
+            }
         } else if(selection === "heart js"){
             colorOptions[midPoint].setAttribute("selected", true);
+            if(colorContainer.classList.contains("is-hidden")){
+                colorContainer.classList.remove("is-hidden");
+            }
         } 
     }//end showDesignatedColors
 
@@ -142,14 +151,16 @@
     function nameValidator(){
         let nameValue = name.value, 
             whatToDo = "", 
-            errorText = "";
+            errorText = "",
+            validInput = false;
         nameValue = nameValue.trim();
         const errorSpan = name.nextElementSibling;
-        const validInput = validateSpecialCharacters(nameValue);
+        const validCharacters = validateSpecialCharacters(nameValue);
 
-        if(nameValue.length > 0 && validInput){
+        if(nameValue.length > 0 && validCharacters){
             whatToDo = "hide";
-        } else if(!validInput){
+            validInput = true;
+        } else if(!validCharacters){
             whatToDo = "show";
             errorText = "The input cannot contain any special character, such as <!@?...";
         } else {
@@ -365,29 +376,30 @@
         const creditCardField = paymentValidator(creditCard);
         const zipCodeField = paymentValidator(zipCode);
         const cvvField = paymentValidator(cvv);
-        let errorText = "",
-            spanToShow = errorSpan;
+        let whatToDo ="show",
+            errorText = "";
         
         if(!nameValidator()){
-            event.preventDefault();
             errorText = "Name field is invalid, please check the information provided!";
         } else if(!emailValidator()){
-            event.preventDefault();
             errorText = "Email field is invalid, please check the information provided!";
         } else if (!activitiesValidator()){
-            event.preventDefault();
             errorText = "You haven't checked any activity, please check at least one!";
         } else if(!creditCardField || !zipCodeField || !cvvField){
-            event.preventDefault();
             errorText = "Please check the credit card information provided!";
         } else {
-            errorText = "Information submitted, Thank you!";
-            spanToShow = successSubmition;
+            whatToDo = "hide";
+
+            showHideError({
+                errorElement: successSubmition,
+                whatToDo: "show",
+                errorText: "Information submitted, Thank you!"
+            });
         }
         
         showHideError({
-            errorElement: spanToShow,
-            whatToDo: "show",
+            errorElement: errorSpan,
+            whatToDo: whatToDo,
             errorText: errorText
         });
     }
