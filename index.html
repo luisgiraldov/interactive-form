@@ -21,12 +21,13 @@
               
       <fieldset>         
         <legend>Basic Info</legend>
+        <label class="required">Fields with an asterisk are required</label>
         
-        <label for="name">Name:</label>
+        <label for="name" class="required">Name:</label>
         <input type="text" id="name" name="user-name" autofocus>
         <span class="error is-hidden" aria-live="polite"></span>
         
-        <label for="mail">Email:</label>
+        <label for="mail" class="required">Email:</label>
         <input type="email" id="mail" name="user-email">
         <span class="error is-hidden" aria-live="polite"></span>
         
@@ -81,7 +82,7 @@
       </fieldset>
 
       <fieldset class="activities js-activities">
-        <legend>Register for Activities</legend>
+        <legend class="required">Register for Activities</legend>
           <label>
             <input type="checkbox" name="all" data-cost="200"> Main Conference — $200
           </label>
@@ -112,7 +113,7 @@
           <span class="error is-hidden" aria-live="polite"></span>        	
       </fieldset>
       <fieldset>
-        <legend>Payment Info</legend>
+        <legend class="required">Payment Info</legend>
 
         <label for="payment">I'm going to pay with:</label>
         <select id="payment" name="user-payment" class="select-css">
@@ -178,7 +179,7 @@
       </fieldset> 
 
       <span class="success is-hidden" aria-live="polite"></span>
-      <span class="error is-hidden" aria-live="polite"></span>
+      <div class="error is-hidden" aria-live="polite"></div>
         
       <!-- <button type="submit">Register</button> -->
       <button type="submit" class="button button--nina button--text-thick button--text-upper button--size-s" data-text="Register">

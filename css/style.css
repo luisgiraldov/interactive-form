@@ -87,6 +87,7 @@ label {
 
 input,
 span[aria-live="polite"],
+label[class="required"],
 select {
 	margin-bottom: 1.125em;	
 }
@@ -422,6 +423,10 @@ option {
 /* ================================= 
   Helper Classes
 ==================================== */
+.required:after {
+		content:" *";
+		color: red;
+}
 
 .is-hidden {
 	display: none;

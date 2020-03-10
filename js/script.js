@@ -1,4 +1,15 @@
+/******************************************
+Treehouse Techdegree:
+FSJS project 3 - Interactive Form
+******************************************/
+
+/*** 
+ * IIFE to not clutter the Global Object
+***/
 (function(){
+    /*** 
+    * Global variables
+    ***/
     const name = document.getElementById("name");
     const email = document.getElementById("mail");
     const jobTitle = document.getElementById("title");
@@ -23,8 +34,10 @@
     }
 
     /***
-     * appending first option to the color menu
-     * get the job role text field and hide it
+     * `initializer` function
+     * Hides other-title field
+     * Creates and append label that shows price when checking activities
+     * Hides the color's menu
      ***/
     function initializer(){
         const colorContainer = document.getElementById("colors-js-puns");
@@ -40,7 +53,9 @@
     }
 
     /***
-     * Callback function to show designated colors when the design menu is changed
+     * `showDesignatedColors` function callback
+     * @param {Object} event - holds the object that fired the event
+     * show designated colors when the design menu is changed
      ***/    
     function showDesignatedColors(event){
         const colorContainer = document.getElementById("colors-js-puns");
@@ -87,7 +102,10 @@
     }//end showDesignatedColors
 
     /***
-     * Callback function to handle checkboxes
+     * `checkingCheckboxes` function callback
+     * @param {Object} event - holds the object that fired the event
+     * Check that workshops don't interfere with each other, disabling the one that does
+     * Calculates the total price for workshops
      ***/ 
     function checkingCheckboxes(event){
         const checkboxes = document.querySelectorAll("input[type='checkbox']");
@@ -113,15 +131,17 @@
 
         if(clicked.checked){
            totalCost += cost;
-           label.textContent = `Total: ${totalCost}`;
+           label.textContent = `Total: $${totalCost}`;
         } else {
            totalCost -= cost;
-           label.textContent = `Total: ${totalCost}`;
+           label.textContent = `Total: $${totalCost}`;
         }
     }//end checkingCheckboxes
 
     /***
-     * Callback function to handle payment section
+     * `showPaymentMethod` function callback
+     * @param {Object} event - holds the object that fired the event
+     * Check which option is selected, and display the correct one depending on the selection
      ***/ 
     function showPaymentMethod(event){
         const selection = event ? event.target.value : "";
@@ -149,8 +169,11 @@
     }
 
     /***
-     * Callback function to handle name input
-     ***/ 
+     * `nameValidator` function callback
+     * Returns boolean value to check if the validation passed or not 
+     * Check the name field that it is not empty and doesn't have invalid characters
+     * Calls showHideError function to display the error message if any
+     ***/
     function nameValidator(){
         let nameValue = name.value, 
             whatToDo = "", 
@@ -181,7 +204,10 @@
     }
 
     /***
-     * Callback function to handle email input
+     * `emailValidator` function callback
+     * Returns boolean value to check if the validation passed or not 
+     * Check the email field that it is not empty and doesn't have invalid characters
+     * Calls showHideError function to display the error message if any
      ***/
     function emailValidator(){
         const emailRegex = /^[^@]+@[^@.]+\.[a-z]+$/i;
@@ -217,9 +243,12 @@
     }
 
     /***
-     * Callback function to handle activities checkboxes
+     * `activitiesValidator` function callback
+     * Returns boolean value to check if the validation passed or not 
+     * Check if at least one activitie is selected
+     * Calls showHideError function to display the error message if any
      ***/
-    function activitiesValidator(event){
+    function activitiesValidator(){
         const checkboxes = document.querySelectorAll("input[type='checkbox']");
         const errorSpan = checkboxes[6].parentNode.nextElementSibling;
         let whatToDo = "",
@@ -248,7 +277,11 @@
     }
 
     /***
-     * Callback function to handle payment
+     * `paymentValidator` function callback
+     * Returns boolean value to check if the validation passed or not 
+     * @param {Object} eventOrElement - holds the object that fired the event or the element we need to validate
+     * Check that credit card, zip code and cvv are filled out correctly and are not empty. This function checks every field independently
+     * Calls showHideError function to display the error message if any
      ***/
     function paymentValidator(eventOrElement){
         const target = eventOrElement.target ? eventOrElement.target : eventOrElement;
@@ -340,9 +373,10 @@
     } //end paymentValidator
 
     /***
-     * showError function to handle input errors
-     * @object -data holds the values of element, whatToDo, and errorText
-     ***/ 
+     * `showHideError` function
+     * @param {Object} data - holds an object that holds element, type of action to execute, and text to add to the element
+     * Remove and add classes to display successful or error messages
+     ***/
     function showHideError(data){
         const errorSpan = data.errorElement;
         if(data.whatToDo === "show"){
@@ -356,7 +390,8 @@
 
             errorSpan.classList.remove("is-hidden");
             errorSpan.classList.add("show-message");
-            errorSpan.textContent = data.errorText;
+            // errorSpan.textContent = data.errorText;
+            errorSpan.innerHTML = data.errorText;
         } else if(data.whatToDo === "hide"){
             if(data.element){
                 const element = data.element;
@@ -368,12 +403,14 @@
 
             errorSpan.classList.remove("show-message");
             errorSpan.classList.add("is-hidden");
-            errorSpan.textContent = data.errorText;
+            // errorSpan.textContent = data.errorText;
+            errorSpan.innerHTML = data.errorText;
         } 
     }
 
     /***
-     * Reset fields
+     * `resetFields` function callback
+     * Resets every input field on the form
      ***/
     function resetFields(){
         name.value = "";
@@ -382,8 +419,23 @@
         email.value = "";
         email.classList.remove("validInput");
 
-        jobTitle.firstElementChild.setAttribute("selected", true);
 
+        const titlesOptions = jobTitle.children;
+        for(let i = 0, len = titlesOptions.length; i < len; i++){
+            if(titlesOptions[i].hasAttribute("selected")){
+                titlesOptions[i].removeAttribute("selected");
+            }
+        }
+        jobTitle.firstElementChild.setAttribute("selected", true);
+        const otherJobRole = document.getElementById("other-title");
+        otherJobRole.hidden = true;
+
+        const themeOptions = designMenu.children;
+        for(let i = 0, len = themeOptions.length; i < len; i++){
+            if(themeOptions[i].hasAttribute("selected")){
+                themeOptions[i].removeAttribute("selected");
+            }
+        }
         designMenu.firstElementChild.setAttribute("selected", true);
         const colorContainer = document.getElementById("colors-js-puns");
         colorContainer.classList.add("is-hidden");
@@ -393,11 +445,25 @@
             if(checkboxes[i].checked){
                 checkboxes[i].checked = false;
             }
+
+            if(checkboxes[i].parentNode.classList.contains("unavailable")){
+                checkboxes[i].parentNode.classList.remove("unavailable");
+            }
+
+            if(checkboxes[i].hasAttribute("disabled")){
+                checkboxes[i].removeAttribute("disabled");
+            }
         }
         totalCost = 0;
         const label = activitiesFieldset.lastElementChild;
         label.hidden = true;
 
+        const paymentOptions = payment.children;
+        for(let i = 0, len = paymentOptions.length; i < len; i++){
+            if(paymentOptions[i].hasAttribute("selected")){
+                paymentOptions[i].removeAttribute("selected");
+            }
+        }
         payment.firstElementChild.selected = true;
         creditCard.value = "";
         creditCard.classList.remove("validInput");
@@ -405,45 +471,60 @@
         zipCode.classList.remove("validInput");
         cvv.value = "";
         cvv.classList.remove("validInput");
-
-
     }
 
     /***
-     * Check every field
+     * `checkForm` function callback
+     * Check every input element to see if it can be submitted
+     * Calls showHideError function to display the error message if any
+     * Calls resetFields function after submitting the data
      ***/
-    function checkForm(event){
-        const errorSpan = form.lastElementChild.previousElementSibling;
-        const successSubmition = errorSpan.previousElementSibling;
-        const creditCardField = paymentValidator(creditCard);
-        const zipCodeField = paymentValidator(zipCode);
-        const cvvField = paymentValidator(cvv);
-        let whatToDo ="show",
-            errorText = "";
+    function checkForm(){
+        const errorDiv = form.lastElementChild.previousElementSibling;
+        const successSubmition = errorDiv.previousElementSibling;
+        let errorText = "",
+            validInput = true;
         
         if(!nameValidator()){
-            errorText = "Name field is invalid, please check the information provided!";
-        } else if(!emailValidator()){
-            errorText = "Email field is invalid, please check the information provided!";
-        } else if (!activitiesValidator()){
-            errorText = "You haven't checked any activity, please check at least one!";
-        } else if(!creditCardField || !zipCodeField || !cvvField){
-            errorText = "Please check the credit card information provided!";
-        } else {
-            whatToDo = "hide";
+            validInput = false;
+            errorText += "<p>Name field is invalid, please check the information provided!</p>";
+        } 
+        
+        if(!emailValidator()){
+            validInput = false;
+            errorText += "<p>Email field is invalid, please check the information provided!</p>";
+        } 
+        
+        
+        if (!activitiesValidator()){
+            validInput = false;
+            errorText += "<p>You haven't checked any activity, please check at least one!</p>";
+        } 
 
+        if(payment.selectedIndex === 0 || payment.selectedIndex === 1){
+            const creditCardField = paymentValidator(creditCard);
+            const zipCodeField = paymentValidator(zipCode);
+            const cvvField = paymentValidator(cvv);
+            if(!creditCardField || !zipCodeField || !cvvField){
+                validInput = false;
+                errorText += "<p>Please check the credit card information provided!</p>";
+            }
+        }
+
+        if(validInput) {
+            errorText = "Information submitted, Thank you!";
             showHideError({
                 errorElement: successSubmition,
                 whatToDo: "show",
-                errorText: "Information submitted, Thank you!"
+                errorText: errorText
             });
             resetFields();
         }
         
         showHideError({
-            errorElement: errorSpan,
-            whatToDo: whatToDo,
-            errorText: errorText
+            errorElement: errorDiv,
+            whatToDo: "hide",
+            errorText: errorText,
         });
     }
     
@@ -474,19 +555,31 @@
     email.addEventListener("blur", emailValidator);
     email.addEventListener("input", emailValidator);
 
+    /***
+     * event delegation on the fieldset that holds the checkboxes
+     * Calls checkingCheckboxes and pass the event object
+     * Calls activitiesValidator to make sure at least one activity is selected
+     ***/
     activitiesFieldset.addEventListener("change", event => {
         checkingCheckboxes(event);
         activitiesValidator();
     });
-    activitiesFieldset.addEventListener("blur", activitiesValidator);
-    activitiesFieldset.addEventListener("mouseleave", event =>{
-        activitiesValidator(event);
-    });
+    // activitiesFieldset.addEventListener("mouseleave", event =>{
+    //     activitiesValidator(event);
+    // });
 
+    /***
+     * event delegation on the select menu with id payment
+     * Calls showPaymentMethod to display the correct payment section
+     ***/
     payment.addEventListener("change", event =>{
         showPaymentMethod(event);
     });
    
+    /***
+     * event delegation on every credit card field
+     * Calls paymentValidator function to make sure every field is filled out correctly
+     ***/
     creditCard.addEventListener("blur", event => {
         paymentValidator(event);
     });
@@ -508,9 +601,15 @@
         paymentValidator(event);
     }); 
     
+    /***
+     * event delegation on the form element
+     * Prevents the default behavior to avoid the page refresh, so it is able to show the successful message
+     * To send information to the server it would use an Ajax request instead of the default behavior
+     * Calls the checkForm function to make sure everything is filled out correctly
+     ***/
     form.addEventListener("submit", event => {
         event.preventDefault();
-        checkForm(event);
+        checkForm();
     });
 
     initializer();
