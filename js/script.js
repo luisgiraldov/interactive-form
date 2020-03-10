@@ -188,7 +188,7 @@ FSJS project 3 - Interactive Form
             validInput = true;
         } else if(!validCharacters){
             whatToDo = "show";
-            errorText = "The input cannot contain any special character, such as <!@?...";
+            errorText = "The input cannot contain any special character, such as &lt!@?...";
         } else {
             whatToDo = "show";
             errorText = "The name field cannot be empty!";
@@ -482,7 +482,8 @@ FSJS project 3 - Interactive Form
     function checkForm(){
         const errorDiv = form.lastElementChild.previousElementSibling;
         const successSubmition = errorDiv.previousElementSibling;
-        let errorText = "",
+        let errorText = ""
+            whatToDo = "show",
             validInput = true;
         
         if(!nameValidator()){
@@ -513,19 +514,27 @@ FSJS project 3 - Interactive Form
 
         if(validInput) {
             errorText = "Information submitted, Thank you!";
-            showHideError({
-                errorElement: successSubmition,
-                whatToDo: "show",
-                errorText: errorText
-            });
+            successSubmition.classList.remove("is-hidden");
+            successSubmition.classList.add("show-message");
+            successSubmition.innerHTML = errorText;
+
+            if(errorDiv.classList.contains("show-message")){
+                errorDiv.classList.remove("show-message");
+                errorDiv.classList.add("is-hidden");
+                errorDiv.innerHTML = "";
+            }
             resetFields();
+        } else {
+            errorDiv.classList.remove("is-hidden");
+            errorDiv.classList.add("show-message");
+            errorDiv.innerHTML = errorText;
+
+            if(successSubmition.classList.contains("show-message")){
+                successSubmition.classList.remove("show-message");
+                successSubmition.classList.add("is-hidden");
+                successSubmition.innerHTML = "";
+            }
         }
-        
-        showHideError({
-            errorElement: errorDiv,
-            whatToDo: "hide",
-            errorText: errorText,
-        });
     }
     
     /***
