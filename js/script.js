@@ -65,7 +65,7 @@ FSJS project 3 - Interactive Form
         // option.selected = true;
         // colorMenu.prepend(option);
         const colorOptions = colorMenu.children;
-        const selection = event ? event.target.value : "Select Theme";
+        const selection = event ? event.target.value : "";
         const midPoint = Math.round(colorOptions.length / 2);
 
         for(let i = 0, len = colorOptions.length; i < len; i++){
@@ -82,12 +82,7 @@ FSJS project 3 - Interactive Form
             } 
         }
 
-        if(selection === "Select Theme"){
-            // colorOptions[0].setAttribute("selected", true);
-            if(!colorContainer.classList.contains("is-hidden")){
-                colorContainer.classList.add("is-hidden");
-            }
-        } else if(selection === "js puns"){
+        if(selection === "js puns"){
             colorOptions[0].setAttribute("selected", true);
 
             if(colorContainer.classList.contains("is-hidden")){
@@ -409,71 +404,6 @@ FSJS project 3 - Interactive Form
     }
 
     /***
-     * `resetFields` function callback
-     * Resets every input field on the form
-     ***/
-    function resetFields(){
-        name.value = "";
-        name.classList.remove("validInput");
-
-        email.value = "";
-        email.classList.remove("validInput");
-
-
-        const titlesOptions = jobTitle.children;
-        for(let i = 0, len = titlesOptions.length; i < len; i++){
-            if(titlesOptions[i].hasAttribute("selected")){
-                titlesOptions[i].removeAttribute("selected");
-            }
-        }
-        jobTitle.firstElementChild.setAttribute("selected", true);
-        const otherJobRole = document.getElementById("other-title");
-        otherJobRole.hidden = true;
-
-        const themeOptions = designMenu.children;
-        for(let i = 0, len = themeOptions.length; i < len; i++){
-            if(themeOptions[i].hasAttribute("selected")){
-                themeOptions[i].removeAttribute("selected");
-            }
-        }
-        designMenu.firstElementChild.setAttribute("selected", true);
-        const colorContainer = document.getElementById("colors-js-puns");
-        colorContainer.classList.add("is-hidden");
-
-        const checkboxes = document.querySelectorAll("input[type='checkbox']");
-        for(let i = 0, len = checkboxes.length; i < len; i++){
-            if(checkboxes[i].checked){
-                checkboxes[i].checked = false;
-            }
-
-            if(checkboxes[i].parentNode.classList.contains("unavailable")){
-                checkboxes[i].parentNode.classList.remove("unavailable");
-            }
-
-            if(checkboxes[i].hasAttribute("disabled")){
-                checkboxes[i].removeAttribute("disabled");
-            }
-        }
-        totalCost = 0;
-        const label = activitiesFieldset.lastElementChild;
-        label.hidden = true;
-
-        const paymentOptions = payment.children;
-        for(let i = 0, len = paymentOptions.length; i < len; i++){
-            if(paymentOptions[i].hasAttribute("selected")){
-                paymentOptions[i].removeAttribute("selected");
-            }
-        }
-        payment.firstElementChild.selected = true;
-        creditCard.value = "";
-        creditCard.classList.remove("validInput");
-        zipCode.value = "";
-        zipCode.classList.remove("validInput");
-        cvv.value = "";
-        cvv.classList.remove("validInput");
-    }
-
-    /***
      * `checkForm` function callback
      * Check every input element to see if it can be submitted
      * Calls showHideError function to display the error message if any
@@ -489,17 +419,20 @@ FSJS project 3 - Interactive Form
         if(!nameValidator()){
             validInput = false;
             errorText += "<p>Name field is invalid, please check the information provided!</p>";
+            event.preventDefault();
         } 
         
         if(!emailValidator()){
             validInput = false;
             errorText += "<p>Email field is invalid, please check the information provided!</p>";
+            event.preventDefault();
         } 
         
         
         if (!activitiesValidator()){
             validInput = false;
             errorText += "<p>You haven't checked any activity, please check at least one!</p>";
+            event.preventDefault();
         } 
 
         if(payment.selectedIndex === 0 || payment.selectedIndex === 1){
@@ -509,6 +442,7 @@ FSJS project 3 - Interactive Form
             if(!creditCardField || !zipCodeField || !cvvField){
                 validInput = false;
                 errorText += "<p>Please check the credit card information provided!</p>";
+                event.preventDefault();
             }
         }
 
@@ -523,7 +457,6 @@ FSJS project 3 - Interactive Form
                 errorDiv.classList.add("is-hidden");
                 errorDiv.innerHTML = "";
             }
-            resetFields();
         } else {
             errorDiv.classList.remove("is-hidden");
             errorDiv.classList.add("show-message");
@@ -616,10 +549,7 @@ FSJS project 3 - Interactive Form
      * To send information to the server it would use an Ajax request instead of the default behavior
      * Calls the checkForm function to make sure everything is filled out correctly
      ***/
-    form.addEventListener("submit", event => {
-        event.preventDefault();
-        checkForm();
-    });
+    form.addEventListener("submit", checkForm);
 
     initializer();
 })();
